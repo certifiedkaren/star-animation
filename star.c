@@ -6,17 +6,16 @@
 #include <time.h>
 #include <stdio.h>
 
-// gcc main.c -o app $(pkg-config --cflags --libs sdl3)
-// implement pcg later for random nums
-
 #define COUNT 500
 
 typedef struct {
   float x, y;
   float vx, vy;
-} point;
+} Point;
 
-point pts[COUNT];
+Point pts[COUNT];
+
+// use render point to make more efficient
 
 int main(int argc, char *argv[]) {
 
