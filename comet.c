@@ -1,5 +1,4 @@
 #include <SDL3/SDL.h>
-#include <SDL3/SDL_render.h>
 #include <stdbool.h>
 #include <stdlib.h>
 #include <sys/types.h>
@@ -56,6 +55,7 @@ int main(int argc, char *argv[]) {
   }
 
   SDL_Renderer *renderer = SDL_CreateRenderer(window, NULL);
+  SDL_SetRenderVSync(renderer, 1);
   int running = true;
   SDL_Event event;
 
@@ -145,7 +145,7 @@ int main(int argc, char *argv[]) {
     for (int i = 0; i < COUNT; i++) {
       SDL_RenderPoint(renderer, (int) pts[i].x, (int) pts[i].y);
     }
-  
+
     SDL_RenderPresent(renderer);
   }
 

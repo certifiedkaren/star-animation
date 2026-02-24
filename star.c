@@ -1,6 +1,4 @@
 #include <SDL3/SDL.h>
-#include <SDL3/SDL_init.h>
-#include <SDL3/SDL_render.h>
 #include <stdbool.h>
 #include <stdlib.h>
 #include <sys/types.h>
