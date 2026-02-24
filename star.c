@@ -1,4 +1,5 @@
 #include <SDL3/SDL.h>
+#include <SDL3/SDL_init.h>
 #include <SDL3/SDL_render.h>
 #include <stdbool.h>
 #include <stdlib.h>
@@ -6,16 +7,10 @@
 #include <time.h>
 #include <stdio.h>
 
-#define COUNT 500
+#define COUNT 1000
 
-typedef struct {
-  float x, y;
-  float vx, vy;
-} Point;
-
-Point pts[COUNT];
-
-// use render point to make more efficient
+static SDL_FPoint pts[COUNT];
+static float pts_speed[COUNT];
 
 int main(int argc, char *argv[]) {
 
@@ -28,6 +23,7 @@ int main(int argc, char *argv[]) {
   }
 
   SDL_Renderer *renderer = SDL_CreateRenderer(window, NULL);
+  SDL_SetRenderVSync(renderer, 1);
   int running = true;
   SDL_Event event;
 
@@ -37,11 +33,9 @@ int main(int argc, char *argv[]) {
   for (int i = 0; i < COUNT; i++) {
     int spawn_top = rand() % 2;
     int pos = rand() % W;
-    float s = 30.0f + (rand() % 100);
+    pts_speed[i] = 30.0f + (rand() % 100);
     pts[i].x = spawn_top ? pos : 0.0f; 
     pts[i].y = !spawn_top ? pos : 0.0f;
-    pts[i].vx = s;
-    pts[i].vy = s;
   }
 
   while (running) {
@@ -64,15 +58,13 @@ int main(int argc, char *argv[]) {
         pts[i].x = spawn_top ? pos : 0.0f; 
         pts[i].y = !spawn_top ? pos : 0.0f;
       } else {
-        pts[i].x += pts[i].vx * dt;
-        pts[i].y += pts[i].vy * dt;
+        pts[i].x += pts_speed[i] * dt;
+        pts[i].y += pts_speed[i] * dt;
       }
     }
 
     SDL_SetRenderDrawColor(renderer, 255, 255, 255, 255);
-    for (int i = 0; i < COUNT; i++) {
-      SDL_RenderPoint(renderer, (int) pts[i].x, (int) pts[i].y);
-    }
+    SDL_RenderPoints(renderer, pts, SDL_arraysize(pts));
 
     SDL_RenderPresent(renderer);
   }
