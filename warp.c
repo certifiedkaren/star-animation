@@ -3,11 +3,12 @@
 #include <stdlib.h>
 #include <sys/types.h>
 #include <time.h>
+#include <math.h>
 
-#define COUNT 150
-#define OFFSET_LOW -50
-#define OFFSET_HIGH 50
+#define COUNT 200
 #define TAIL_LEN 30
+#define RADIUS 50
+#define PI 3.14159265
 
 static SDL_FPoint pts_head[COUNT];
 static SDL_FPoint pts_tail[COUNT];
@@ -38,11 +39,15 @@ int main(int argc, char *argv[]) {
   for (int i = 0; i < COUNT; i++) {
     int center_x = W / 2;
     int center_y = H / 2;
-    int offset_x = get_random_int(OFFSET_LOW, OFFSET_HIGH);
-    int offset_y = get_random_int(OFFSET_LOW, OFFSET_HIGH);
-    pts_speed[i] = 50.0f + (float)rand() / (float)RAND_MAX * 150.0f;
-    pts_head[i].x = center_x + offset_x;
-    pts_head[i].y = center_y + offset_y; 
+    pts_speed[i] = 50.0f + (float)rand() / (float)RAND_MAX * 200.0f;
+    float r = RADIUS;
+    float angle = ((float)rand() / RAND_MAX) * 2.0f * PI;
+    float x = center_x + r * cosf(angle);
+    float y = center_y + r * sinf(angle);
+    pts_head[i].x = x;
+    pts_head[i].y = y;
+    pts_tail[i].x = x;
+    pts_tail[i].y = y;
   }
 
   while (running) {
@@ -59,23 +64,21 @@ int main(int argc, char *argv[]) {
     SDL_RenderClear(renderer);
 
     for (int i = 0; i < COUNT; i++) {
-      if (pts_head[i].x > W || pts_head[i].y > H || pts_head[i].x < 0 || pts_head[i].y < 0) {
+      if (pts_head[i].x > W + 20 || pts_head[i].y > H + 20 || pts_head[i].x < -20 || pts_head[i].y < -20) {
         int center_x = W / 2;
         int center_y = H / 2;
-        int offset_x = get_random_int(OFFSET_LOW, OFFSET_HIGH);
-        int offset_y = get_random_int(OFFSET_LOW, OFFSET_HIGH);
-        pts_speed[i] = 50.0f + (float)rand() / (float)RAND_MAX * 100.0f;
-        pts_head[i].x = center_x + offset_x;
-        pts_head[i].y = center_y + offset_y; 
+        pts_speed[i] = 50.0f + (float)rand() / (float)RAND_MAX * 200.0f;
 
-        float dx = pts_head[i].x - center_x;
-        float dy = pts_head[i].y - center_y;
-        float len = SDL_sqrtf(dx*dx + dy*dy);
-        if (len < 0.0001f) len = 0.0001f;
-        float dirx = dx / len;
-        float diry = dy / len;
-        pts_tail[i].x = pts_head[i].x - dirx * TAIL_LEN;
-        pts_tail[i].y = pts_head[i].y - diry * TAIL_LEN;
+        float u1 = (float)rand() / RAND_MAX;
+        float u2 = (float)rand() / RAND_MAX;
+        float r = RADIUS;
+        float angle = u2 * 2.0f * PI;
+        float x = center_x + r * cosf(angle);
+        float y = center_y + r * sinf(angle);
+        pts_head[i].x = x;
+        pts_head[i].y = y;
+        pts_tail[i].x = x;
+        pts_tail[i].y = y;
       }
       else {
         float dx_center = pts_head[i].x - W / 2.0f;
